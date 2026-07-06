@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Lista Tornei</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">⚽ SIW Tornei</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/tornei">Tornei</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/partite">Calendario</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/squadre">Squadre</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Area Riservata</a>
+                        <ul class="dropdown-menu">
+                            <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
+                                    href="/admin/torneo/nuovo">Nuovo Torneo</a></li>
+                            <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
+                                    href="/admin/squadra/nuova">Nuova Squadra</a></li>
+                            <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
+                                    href="/admin/giocatore/nuovo">Nuovo Giocatore</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <h1>I nostri Tornei</h1>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Nome Torneo</th>
+                <th>Anno</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="torneo : ${tornei}">
+                <td th:text="${torneo.nome}"></td>
+                <td th:text="${torneo.anno}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

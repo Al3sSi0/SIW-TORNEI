@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Squadre - SIW Tornei</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">⚽ SIW Tornei</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/tornei">Tornei</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/partite">Calendario</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/squadre">Squadre</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Area Admin</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
+                                    href="/admin/torneo/nuovo">Nuovo Torneo</a></li>
+                            <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
+                                    href="/admin/squadra/nuova">Nuova Squadra</a></li>
+                            <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
+                                    href="/admin/giocatore/nuovo">Nuovo Giocatore</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-primary">Elenco Squadre</h1>
+            <a sec:authorize="hasAuthority('ADMIN')" href="/admin/squadra/nuova" class="btn btn-success">+ Aggiungi
+                Squadra</a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-striped table-hover m-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nome Squadra</th>
+                            <th>Anno di Fondazione</th>
+                            <th>Città</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="squadra : ${squadre}">
+                            <td class="fw-bold" th:text="${squadra.nome}"></td>
+                            <td th:text="${squadra.annoDiFondazione}"></td>
+                            <td th:text="${squadra.citta}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(squadre)}">
+                            <td colspan="3" class="text-center py-4 text-muted">Nessuna squadra presente nel sistema.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

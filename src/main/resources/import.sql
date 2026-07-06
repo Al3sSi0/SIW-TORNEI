@@ -1,0 +1,2 @@
+INSERT INTO utente (id, nome, cognome) VALUES (1, 'Admin', 'Principale');
+INSERT INTO credenziali (id, username, password, role, utente_id) VALUES (1, 'admin', '$2a$10$EblZqNptyYvcLm/VwDCVAuAw5QompYW.YlO3U/IeI.uH6L1sH4G7O', 'ADMIN', 1);

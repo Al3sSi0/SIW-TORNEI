@@ -1,0 +1,28 @@
+package it.uniroma3.siw_tornei_01.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import it.uniroma3.model.Giocatore;
+import it.uniroma3.repository.GiocatoreRepository;
+
+@Controller
+@RequestMapping("/admin/giocatore")
+public class AdminGiocatoreController {
+    @Autowired private GiocatoreRepository repo;
+
+    @GetMapping("/nuovo") public String form(Model model) { model.addAttribute("giocatore", new Giocatore(null, null, null, null, null)); return "admin/giocatoreForm"; }
+    @PostMapping("") public String salva(@ModelAttribute Giocatore g) { repo.save(g); return "redirect:/admin/giocatori"; }
+    @GetMapping("/elimina/{id}") public String e
+    @PostMapping("/admin/torneo")
+    public String salvaTorneo(@Valid @ModelAttribute("torneo") Torneo torneo, BindingResult bindingResult) {
+        // Se la validazione fallisce, ricarica la pagina del form
+        if (bindingResult.hasErrors()) {
+            return "admin/torneoForm"; 
+        }
+        
+        this.torneoService.save(torneo);
+        return "redirect:/tornei";
+    }
+}
