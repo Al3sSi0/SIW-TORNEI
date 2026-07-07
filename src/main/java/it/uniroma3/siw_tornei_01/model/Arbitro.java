@@ -1,7 +1,12 @@
 package it.uniroma3.siw_tornei_01.model;
 
-import jakarta.persistence.*;
 import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Arbitro {
@@ -17,7 +22,9 @@ public class Arbitro {
     @OneToMany(mappedBy = "arbitro")
     private List<Partita> partiteArbitrate;
 
-
+    public Arbitro(){
+        
+    }
     
     public Arbitro(String nome, String cognome, String matricola) {
         this.nome = nome;
@@ -64,6 +71,4 @@ public class Arbitro {
     public void setPartiteArbitrate(List<Partita> partiteArbitrate) {
         this.partiteArbitrate = partiteArbitrate;
     }
-
-    // Costruttori, Getter e Setter...
 }

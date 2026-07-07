@@ -1,7 +1,13 @@
 package it.uniroma3.siw_tornei_01.model;
 
-import jakarta.persistence.*;
 import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Squadra {
@@ -21,6 +27,9 @@ public class Squadra {
     
     @OneToMany(mappedBy = "squadra")
     private List<Giocatore> giocatori;
+
+    public Squadra() {
+    }
 
     public Squadra(String nome, Integer annoDiFondazione, String citta) {
         this.nome = nome;

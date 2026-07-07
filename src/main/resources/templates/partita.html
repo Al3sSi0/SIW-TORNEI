@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dettagli Partita</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Aggiunto per le icone (es. l'omino dell'arbitro) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body text-center p-5">
+                <h4 class="text-muted mb-4" th:text="${partita.torneo.nome}">Nome Torneo</h4>
+
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-4 text-end">
+                        <h2 class="fw-bold text-primary" th:text="${partita.squadraHome.nome}">Squadra Casa</h2>
+                    </div>
+                    <div class="col-2 text-center">
+                        <span class="fs-1 fw-bold">
+                            <span th:text="${partita.goalsHome}">0</span> - <span
+                                th:text="${partita.goalsAway}">0</span>
+                        </span>
+                    </div>
+                    <div class="col-4 text-start">
+                        <h2 class="fw-bold text-danger" th:text="${partita.squadraAway.nome}">Squadra Trasferta</h2>
+                    </div>
+                </div>
+
+                <!-- NUOVO: SEZIONE ARBITRO -->
+                <div class="mt-4 text-center">
+                    <span class="badge bg-secondary p-2 fs-6 shadow-sm" th:if="${partita.arbitro != null}">
+                        <i class="bi bi-person-fill me-1"></i>
+                        Direttore di gara: <span
+                            th:text="${partita.arbitro.nome} + ' ' + ${partita.arbitro.cognome}">Nome Arbitro</span>
+                    </span>
+                    <span class="badge bg-warning text-dark p-2 fs-6 shadow-sm" th:unless="${partita.arbitro != null}">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Arbitro non ancora assegnato
+                    </span>
+                </div>
+                <!-- FINE SEZIONE ARBITRO -->
+
+            </div>
+        </div>
+
+        <div id="sezione-commenti-react" th:data-id="${partita.id}"></div>
+
+        <div class="text-center mt-4 mb-5">
+            <a href="/partite" class="btn btn-outline-secondary fw-bold">Torna alle Partite</a>
+        </div>
+
+    </div>
+
+    <script type="text/babel">
+        function SezioneCommenti({ partitaId }) {
+            const [commenti, setCommenti] = React.useState([]);
+            const [nuovoTesto, setNuovoTesto] = React.useState("");
+            const [autore, setAutore] = React.useState("");
+
+            React.useEffect(() => {
+                fetch(`/api/commenti/${partitaId}`)
+                    .then(res => res.json())
+                    .then(data => setCommenti(data || []))
+                    .catch(err => console.error("Errore recupero commenti:", err));
+            }, [partitaId]);
+
+            const salvaCommento = (e) => {
+                e.preventDefault();
+                if (!nuovoTesto || !autore) return;
+
+                const nuovoCommento = { autore: autore, testo: nuovoTesto };
+
+                fetch(`/api/commenti/${partitaId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(nuovoCommento)
+                })
+                    .then(res => res.json())
+                    .then(commentoSalvato => {
+                        setCommenti([...commenti, commentoSalvato]);
+                        setNuovoTesto("");
+                        setAutore("");
+                    });
+            };
+
+            return (
+                <div className="card shadow-sm border-0 bg-white rounded-4">
+                    <div className="card-body p-4">
+                        <h5 className="fw-bold mb-4">💬 Live Chat della Partita</h5>
+
+                        <div className="mb-4" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                            {commenti.length === 0 ? (
+                                <p className="text-muted fst-italic">Nessun commento ancora. Scrivi il primo!</p>
+                            ) : (
+                                commenti.map((c, index) => (
+                                    <div key={index} className="bg-light p-3 rounded-3 shadow-sm mb-2 border-start border-primary border-4">
+                                        <strong className="text-primary">{c.autore}</strong>
+                                        <p className="mb-0 mt-1 text-secondary">{c.testo}</p>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        <form onSubmit={salvaCommento} className="border-top pt-3">
+                            <div className="row g-2">
+                                <div className="col-md-3">
+                                    <input type="text" className="form-control" placeholder="Tuo Nome" value={autore} onChange={(e) => setAutore(e.target.value)} required />
+                                </div>
+                                <div className="col-md-7">
+                                    <input type="text" className="form-control" placeholder="Scrivi un commento..." value={nuovoTesto} onChange={(e) => setNuovoTesto(e.target.value)} required />
+                                </div>
+                                <div className="col-md-2">
+                                    <button type="submit" className="btn btn-primary w-100 fw-bold">Invia</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        const contenitore = document.getElementById('sezione-commenti-react');
+        const idDellaPartita = contenitore.getAttribute('data-id');
+        const root = ReactDOM.createRoot(contenitore);
+        root.render(<SezioneCommenti partitaId={idDellaPartita} />);
+    </script>
+
+</body>
+
+</html>

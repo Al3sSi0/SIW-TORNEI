@@ -20,7 +20,6 @@ public class AdminGiocatoreController {
     @Autowired private GiocatoreRepository giocatoreRepo;
     @Autowired private SquadraService squadraService;
 
-    // Mostra il form e passa la lista delle squadre per la select
     @GetMapping("/nuovo")
     public String formGiocatore(Model model) {
         model.addAttribute("giocatore", new Giocatore(null, null, null, null, null));
@@ -28,17 +27,15 @@ public class AdminGiocatoreController {
         return "admin/giocatoreForm";
     }
 
-    // Salva il giocatore
     @PostMapping("")
     public String salvaGiocatore(@ModelAttribute Giocatore g) {
         giocatoreRepo.save(g);
-        return "redirect:/admin/giocatori"; // Assicurati di avere una rotta /admin/giocatori che mostra la lista
+        return "redirect:/"; 
     }
 
-    // Elimina
     @GetMapping("/elimina/{id}")
     public String eliminaGiocatore(@PathVariable Long id) {
         giocatoreRepo.deleteById(id);
-        return "redirect:/admin/giocatori";
+        return "redirect:/admin";
     }
 }

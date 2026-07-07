@@ -1,8 +1,16 @@
 package it.uniroma3.siw_tornei_01.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Partita {
@@ -15,9 +23,8 @@ public class Partita {
     private String luogo;
     private Integer goalsHome;
     private Integer goalsAway;
-    private String stato; // Es: "SCHEDULED", "PLAYED", "CANCELLED"
+    private String stato;
 
-    // IMPORTANTE: usiamo LAZY per preparare il terreno all'analisi N+1!
     @ManyToOne(fetch = FetchType.LAZY)
     private Squadra squadraHome;
 
@@ -33,7 +40,9 @@ public class Partita {
     @OneToMany(mappedBy = "partita", cascade = CascadeType.ALL)
     private List<Commento> commenti;
 
+    public Partita(){
 
+    }
     
     public Partita(LocalDateTime dataEOra, String luogo, Integer goalsHome, Integer goalsAway, String stato) {
         this.dataEOra = dataEOra;

@@ -6,9 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import it.uniroma3.siw_tornei_01.service.TorneoService;
-import it.uniroma3.siw_tornei_01.service.PartitaService;
 import it.uniroma3.siw_tornei_01.repository.SquadraRepository;
+import it.uniroma3.siw_tornei_01.service.PartitaService;
+import it.uniroma3.siw_tornei_01.service.SquadraService;
+import it.uniroma3.siw_tornei_01.service.TorneoService;
 
 @Controller
 public class PublicController {
@@ -16,32 +17,34 @@ public class PublicController {
     @Autowired private TorneoService torneoService;
     @Autowired private PartitaService partitaService;
     @Autowired private SquadraRepository squadraRepository;
+    @Autowired private SquadraService squadraService;
 
-    // Homepage
     @GetMapping("/")
     public String index() {
         return "index";
     }
 
-    // Lista Tornei (Thymeleaf)
     @GetMapping("/tornei")
     public String getTornei(Model model) {
         model.addAttribute("tornei", torneoService.findAll());
         return "tornei";
     }
 
-    // Calendario Partite
     @GetMapping("/partite")
     public String getPartite(Model model) {
-        // Qui usi il metodo ottimizzato che abbiamo fatto per l'N+1!
-        model.addAttribute("partite", partitaService.findAll()); // Assicurati di avere un findAll() in PartitaService
+        model.addAttribute("partite", partitaService.findAll()); 
         return "partite";
     }
 
-    // Lista Squadre
     @GetMapping("/squadre")
     public String getSquadre(Model model) {
-        model.addAttribute("squadre", squadraRepository.findAll());
+        model.addAttribute("squadre", this.squadraRepository.findAll());
         return "squadre";
     }
+
+    @GetMapping("/squadra/{id}")
+        public String getSquadra(@PathVariable("id") Long id, Model model) {
+            model.addAttribute("squadra", this.squadraService.findById(id)); 
+            return "squadra"; 
+        }
 }

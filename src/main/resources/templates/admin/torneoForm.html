@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuovo Torneo - Tornei Calcistici Roma Tre</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5 shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="/">⚽ SIW Tornei</a>
-            <div class="collapse navbar-collapse">
+            <a class="navbar-brand fw-bold" href="/">⚽Tornei Calcistici Roma Tre</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="/tornei">Tornei</a></li>
                     <li class="nav-item"><a class="nav-link" href="/partite">Calendario</a></li>
@@ -17,7 +27,7 @@
                     </li>
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Area Riservata</a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
                             <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
                                     href="/admin/torneo/nuovo">Nuovo Torneo</a></li>
                             <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
@@ -27,7 +37,11 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="m-0 p-0">
+                                    <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -35,29 +49,55 @@
         </div>
     </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <h1>Crea un nuovo Torneo</h1>
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
 
-    <form th:action="@{/admin/torneo}" th:object="${torneo}" method="post">
-        <div>
-            <label>Nome:</label>
-            <input type="text" th:field="*{nome}" required />
+                <div class="card shadow border-0 rounded-3">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h3 class="mb-0">Crea un Nuovo Torneo</h3>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <form th:action="@{/admin/torneo}" th:object="${torneo}" method="post">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-secondary">Nome del Torneo <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-lg" th:field="*{nome}" required
+                                    placeholder="es. Torneo Estivo 2026" />
+                                <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"
+                                    class="text-danger small mt-1 d-block"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-secondary">Anno <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" class="form-control form-control-lg" th:field="*{anno}" required
+                                    placeholder="es. 2026" min="2000" max="2100" />
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-secondary">Descrizione</label>
+                                <textarea class="form-control form-control-lg" th:field="*{descrizione}" rows="3"
+                                    placeholder="Breve descrizione del torneo..."></textarea>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">Salva
+                                    Torneo</button>
+                                <a href="/tornei" class="btn btn-outline-secondary">Annulla e torna alla lista</a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div>
-            <label>Anno:</label>
-            <input type="number" th:field="*{anno}" required />
-        </div>
-        <div>
-            <label>Descrizione:</label>
-            <input type="text" th:field="*{descrizione}" />
-        </div>
-        <div>
-            <label>Nome:</label>
-            <input type="text" th:field="*{nome}" class="form-control" />
-            <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger"></span>
-        </div>
-        <button type="submit">Salva Torneo</button>
-    </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

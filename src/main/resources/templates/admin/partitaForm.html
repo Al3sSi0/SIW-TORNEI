@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione Partita</title>
+    <link href="/css/stile.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<body class="bg-light">
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold text-primary mb-0">
+                        <i class="bi bi-stopwatch me-2"></i>Gestione Partita
+                    </h2>
+                    <a href="/partite" class="btn btn-outline-secondary fw-bold shadow-sm">
+                        <i class="bi bi-arrow-left me-1"></i> Torna al Calendario
+                    </a>
+                </div>
+
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-5">
+
+                        <p class="text-muted mb-4">Compila i campi sottostanti per registrare un nuovo incontro o
+                            aggiornare i risultati di una partita esistente.</p>
+
+                        <form th:action="@{/admin/partita}" th:object="${partita}" method="post">
+
+                            <input type="hidden" th:field="*{id}" />
+
+                            <h5 class="fw-bold mb-3 border-bottom pb-2">Dettagli Evento</h5>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-secondary">Torneo di Appartenenza <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select bg-light" th:field="*{torneo}" required>
+                                    <option value="" disabled selected>-- Seleziona il torneo --</option>
+                                    <option th:each="t : ${tornei}" th:value="${t.id}" th:text="${t.nome}"></option>
+                                </select>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary">Data e Ora <span
+                                            class="text-danger">*</span></label>
+                                    <input type="datetime-local" class="form-control bg-light" th:field="*{dataEOra}"
+                                        required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary">Stato dell'Incontro <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select bg-light" th:field="*{stato}" required>
+                                        <option value="DA GIOCARE">Da Giocare</option>
+                                        <option value="IN CORSO">In Corso</option>
+                                        <option value="TERMINATA">Terminata</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <h5 class="fw-bold mb-3 border-bottom pb-2 mt-5">Le Squadre</h5>
+
+                            <div class="row mb-4 align-items-center">
+                                <div class="col-md-5">
+                                    <div class="p-3 border rounded-3 bg-white text-center shadow-sm">
+                                        <label class="form-label fw-bold text-primary mb-2">Squadra in Casa</label>
+                                        <select class="form-select text-center" th:field="*{squadraHome}" required>
+                                            <option value="" disabled selected>-- Seleziona --</option>
+                                            <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 text-center py-3">
+                                    <span class="badge bg-dark rounded-pill px-3 py-2 fs-6 shadow-sm">VS</span>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="p-3 border rounded-3 bg-white text-center shadow-sm">
+                                        <label class="form-label fw-bold text-danger mb-2">Squadra in Trasferta</label>
+                                        <select class="form-select text-center" th:field="*{squadraAway}" required>
+                                            <option value="" disabled selected>-- Seleziona --</option>
+                                            <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5 class="fw-bold mb-3 border-bottom pb-2 mt-5">Risultato Finale</h5>
+                            <p class="small text-muted mb-3"><i class="bi bi-info-circle me-1"></i>Lascia in bianco se
+                                la partita non è ancora stata disputata.</p>
+
+                            <div class="row mb-5 justify-content-center">
+                                <div class="col-md-3 col-6 text-center">
+                                    <label class="form-label fw-bold text-secondary">Gol Casa</label>
+                                    <input type="number" min="0"
+                                        class="form-control form-control-lg text-center fw-bold text-primary"
+                                        th:field="*{goalsHome}" placeholder="-">
+                                </div>
+                                <div class="col-md-1 d-none d-md-flex align-items-center justify-content-center">
+                                    <span class="fs-3 text-muted">-</span>
+                                </div>
+                                <div class="col-md-3 col-6 text-center">
+                                    <label class="form-label fw-bold text-secondary">Gol Trasferta</label>
+                                    <input type="number" min="0"
+                                        class="form-control form-control-lg text-center fw-bold text-danger"
+                                        th:field="*{goalsAway}" placeholder="-">
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
+                                <button type="reset" class="btn btn-light px-4 me-md-2">Svuota Campi</button>
+                                <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">
+                                    <i class="bi bi-save me-2"></i>Salva Partita
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

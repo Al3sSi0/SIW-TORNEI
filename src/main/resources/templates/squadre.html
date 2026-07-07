@@ -3,14 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Squadre - SIW Tornei</title>
+    <title>Le Nostre Squadre - Tornei Calcistici Roma Tre</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5 shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="/">⚽ SIW Tornei</a>
+            <a class="navbar-brand fw-bold" href="/">⚽ Tornei Calcistici Roma Tre</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -21,11 +22,12 @@
                     <li class="nav-item"><a class="nav-link active" href="/squadre">Squadre</a></li>
                 </ul>
                 <ul class="navbar-nav">
-                    <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" href="/login">Login</a>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" href="/login">Login</a>
                     </li>
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Area Admin</a>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Area Riservata</a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
                             <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
                                     href="/admin/torneo/nuovo">Nuovo Torneo</a></li>
                             <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
@@ -35,7 +37,11 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="m-0 p-0">
+                                    <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -43,37 +49,53 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container mb-5">
+
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="text-primary">Elenco Squadre</h1>
-            <a sec:authorize="hasAuthority('ADMIN')" href="/admin/squadra/nuova" class="btn btn-success">+ Aggiungi
-                Squadra</a>
+            <h2 class="fw-bold text-primary mb-0">Le Squadre</h2>
+
+            <a sec:authorize="hasAuthority('ADMIN')" href="/admin/squadra/nuova"
+                class="btn btn-success fw-bold shadow-sm">
+                + Nuova Squadra
+            </a>
         </div>
 
-        <div class="card shadow-sm">
+        <div class="card shadow border-0 rounded-3">
             <div class="card-body p-0">
-                <table class="table table-striped table-hover m-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Nome Squadra</th>
-                            <th>Anno di Fondazione</th>
-                            <th>Città</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="squadra : ${squadre}">
-                            <td class="fw-bold" th:text="${squadra.nome}"></td>
-                            <td th:text="${squadra.annoDiFondazione}"></td>
-                            <td th:text="${squadra.citta}"></td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(squadre)}">
-                            <td colspan="3" class="text-center py-4 text-muted">Nessuna squadra presente nel sistema.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0 text-center align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="py-3 fs-5">Nome</th>
+                                <th class="py-3 fs-5">Città</th>
+                                <th class="py-3 fs-5">Fondazione</th>
+                                <th class="py-3 fs-5">Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="squadra : ${squadre}">
+                                <td class="fw-bold text-secondary py-3 fs-5" th:text="${squadra.nome}">Nome Squadra</td>
+                                <td class="py-3 fs-5" th:text="${squadra.citta}">Città</td>
+                                <td class="py-3 fs-5" th:text="${squadra.annoDiFondazione}">1900</td>
+                                <td class="py-3">
+                                    <a th:href="@{/squadra/{id}(id=${squadra.id})}"
+                                        class="btn btn-sm btn-outline-primary fw-bold">Vedi Dettagli</a>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.isEmpty(squadre)}">
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <h5 class="mb-0">Nessuna squadra disponibile al momento.</h5>
+                                    <p class="mb-0 small" sec:authorize="hasAuthority('ADMIN')">Clicca su "Nuova
+                                        Squadra" per registrarne una.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,7 +1,13 @@
 package it.uniroma3.siw_tornei_01.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Giocatore {
@@ -20,7 +26,9 @@ public class Giocatore {
     @ManyToOne(fetch = FetchType.LAZY)
     private Squadra squadra;
 
-
+    public Giocatore(){
+        
+    }
     
     public Giocatore(String nome, String cognome, LocalDate dataDiNascita, String ruolo, Double altezza) {
         this.nome = nome;

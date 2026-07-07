@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
+    <meta charset="UTF-8">
+    <title>Nuovo Giocatore - ⚽Tornei Calcistici Roma Tre</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Nuovo Giocatore</title>
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5 shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="/">⚽ SIW Tornei</a>
-            <div class="collapse navbar-collapse">
+            <a class="navbar-brand fw-bold" href="/">⚽Tornei Calcistici Roma Tre</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="/tornei">Tornei</a></li>
                     <li class="nav-item"><a class="nav-link" href="/partite">Calendario</a></li>
@@ -22,7 +27,7 @@
                     </li>
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Area Riservata</a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
                             <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
                                     href="/admin/torneo/nuovo">Nuovo Torneo</a></li>
                             <li sec:authorize="hasAuthority('ADMIN')"><a class="dropdown-item"
@@ -32,7 +37,11 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="m-0 p-0">
+                                    <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -40,38 +49,77 @@
         </div>
     </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <h1>Inserisci nuovo Giocatore</h1>
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
 
-    <form th:action="@{/admin/giocatore}" th:object="${giocatore}" method="post">
-        <div>
-            <label>Nome:</label>
-            <input type="text" th:field="*{nome}" required />
+                <div class="card shadow border-0 rounded-3">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h3 class="mb-0">Inserisci Nuovo Giocatore</h3>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <form th:action="@{/admin/giocatore}" th:object="${giocatore}" method="post">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-secondary">Nome <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-lg" th:field="*{nome}" required
+                                    placeholder="es. Francesco" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-secondary">Cognome <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-lg" th:field="*{cognome}" required
+                                    placeholder="es. Totti" />
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-secondary">Data di Nascita <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" class="form-control form-control-lg" th:field="*{dataDiNascita}"
+                                    required />
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <label class="form-label fw-bold text-secondary">Ruolo</label>
+                                    <input type="text" class="form-control form-control-lg" th:field="*{ruolo}"
+                                        placeholder="es. Attaccante" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary">Altezza (m)</label>
+                                    <input type="number" step="0.01" class="form-control form-control-lg"
+                                        th:field="*{altezza}" placeholder="es. 1.80" />
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                <label class="form-label fw-bold text-secondary">Squadra di appartenenza <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select form-select-lg" th:field="*{squadra}" required>
+                                    <option value="" disabled selected>-- Seleziona una squadra --</option>
+                                    <option th:each="squadra : ${squadre}" th:value="${squadra.id}"
+                                        th:text="${squadra.nome}"></option>
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">Salva
+                                    Giocatore</button>
+                                <a href="/squadre" class="btn btn-outline-secondary">Annulla e Torna alle Squadre</a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div>
-            <label>Cognome:</label>
-            <input type="text" th:field="*{cognome}" required />
-        </div>
-        <div>
-            <label>Data di Nascita:</label>
-            <input type="date" th:field="*{dataDiNascita}" required />
-        </div>
-        <div>
-            <label>Ruolo:</label>
-            <input type="text" th:field="*{ruolo}" />
-        </div>
-        <div>
-            <label>Altezza (es. 1.80):</label>
-            <input type="number" step="0.01" th:field="*{altezza}" />
-        </div>
-        <div>
-            <label>Squadra:</label>
-            <select th:field="*{squadra}">
-                <option th:each="squadra : ${squadre}" th:value="${squadra.id}" th:text="${squadra.nome}"></option>
-            </select>
-        </div>
-        <button type="submit">Salva Giocatore</button>
-    </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -6,8 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 
 @Entity
@@ -25,6 +25,10 @@ public class Torneo {
     @ManyToMany(mappedBy = "tornei")
     private List<Squadra> squadre;
     
+    public Torneo(){
+        
+    }
+
     public Torneo(String nome, int anno, String descrizione) {
     this.nome = nome;
     this.anno = anno;
